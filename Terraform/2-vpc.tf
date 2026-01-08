@@ -16,28 +16,28 @@ additional_tags = {
 
 resource "aws_subnet" "public-subnet-1" {
 vpc_id     = aws_vpc.demo-eks-cluster-vpc.id
-cidr_block = cidrsubnet(var.cidr_block, 8, 10) # 10.10.10.0/24
+cidr_block = cidrsubnet(var.cidr_block, 8, 1) # 10.10.10.0/24
 availability_zone = data.aws_availability_zones.available.names[0]
 tags = var.tags
 }
 
 resource "aws_subnet" "public-subnet-2" {
 vpc_id     = aws_vpc.demo-eks-cluster-vpc.id
-cidr_block = cidrsubnet(var.cidr_block, 8, 20) # 10.10.20.0/24
+cidr_block = cidrsubnet(var.cidr_block, 8, 2) # 10.10.20.0/24
 availability_zone = data.aws_availability_zones.available.names[1]
 tags = var.tags
 }
 
 resource "aws_subnet" "private-subnet-1" {
 vpc_id     = aws_vpc.demo-eks-cluster-vpc.id
-cidr_block = cidrsubnet(var.cidr_block, 8, 110) # 10.10.110.0/24
+cidr_block = cidrsubnet(var.cidr_block, 8, 3) # 10.10.110.0/24
 availability_zone = data.aws_availability_zones.available.names[0]
 tags = merge( var.tags, local.additional_tags)
 }
 
 resource "aws_subnet" "private-subnet-2" {
 vpc_id     = aws_vpc.demo-eks-cluster-vpc.id
-cidr_block = cidrsubnet(var.cidr_block, 8, 120)
+cidr_block = cidrsubnet(var.cidr_block, 8, 4)
 availability_zone = data.aws_availability_zones.available.names[1]
 tags = merge( var.tags, local.additional_tags)
 }
