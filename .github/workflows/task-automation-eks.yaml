@@ -1,0 +1,35 @@
+name: Push Docker Image to AWS ECR And Deploy in EKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ecr-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS CLI
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set region $AWS_REGION
+
+      - name: Login to Amazon ECR
+        run: |
+           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 058264253492.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build -t test-task .
+          docker tag test-task:latest 058264253492.dkr.ecr.us-east-1.amazonaws.com/test-task:${{ github.sha }}
+           docker push 058264253492.dkr.ecr.us-east-1.amazonaws.com/test-task:${{ github.sha }}
+          
